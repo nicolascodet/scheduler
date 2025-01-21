@@ -254,10 +254,10 @@ export async function executeCommand(
     calendar: {
       createEvent: (event: any) => Promise<any>
       updateEvent: (event: any) => Promise<any>
-      deleteEvent: (eventId: string) => Promise<any>
+      deleteEvent: (eventId: string) => Promise<void>
     }
-    training?: any
-    project?: any
+    training: any | undefined
+    project: any | undefined
   }
 ): Promise<{ success: boolean; message: string }> {
   try {

@@ -123,6 +123,8 @@ export async function POST(request: NextRequest) {
             })
           },
         },
+        training: undefined,
+        project: undefined,
       })
 
       // Update response message if command execution failed
