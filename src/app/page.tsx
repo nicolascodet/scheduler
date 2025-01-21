@@ -1,101 +1,84 @@
-import Image from "next/image";
+'use client'
+
+import { useState } from 'react'
+import Calendar from '@/components/Calendar'
+import Chat from '@/components/Chat/Chat'
+import { ChatMessage } from '@/types/chat'
+
+// Mock initial message
+const INITIAL_MESSAGES: ChatMessage[] = [
+  {
+    id: '1',
+    content: "Hello! I'm your calendar assistant. How can I help you optimize your schedule today?",
+    role: 'assistant',
+    timestamp: new Date(),
+    status: 'sent'
+  }
+]
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES)
+  const [isLoading, setIsLoading] = useState(false)
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  const handleSendMessage = async (content: string) => {
+    // Add user message
+    const userMessage: ChatMessage = {
+      id: Date.now().toString(),
+      content,
+      role: 'user',
+      timestamp: new Date(),
+      status: 'sent'
+    }
+    setMessages(prev => [...prev, userMessage])
+    
+    // TODO: Implement actual Claude API call
+    setIsLoading(true)
+    await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate API delay
+    
+    // Add assistant response
+    const assistantMessage: ChatMessage = {
+      id: (Date.now() + 1).toString(),
+      content: "I'm still being configured to respond properly. Check back soon!",
+      role: 'assistant',
+      timestamp: new Date(),
+      status: 'sent'
+    }
+    setMessages(prev => [...prev, assistantMessage])
+    setIsLoading(false)
+  }
+
+  return (
+    <div className="flex flex-col h-[100dvh] bg-white">
+      {/* Fixed Header - accounts for iOS safe area */}
+      <header className="fixed top-0 left-0 right-0 bg-white border-b z-10 safe-top">
+        <div className="px-4 h-14 flex items-center justify-between max-w-3xl mx-auto">
+          <h1 className="text-lg font-medium text-gray-900">Calendar Optimizer</h1>
+          <button className="p-2 rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      {/* Main Content Area - pushes content below header */}
+      <main className="flex-1 overflow-hidden pt-14">
+        <div className="h-full flex flex-col">
+          {/* Calendar Section */}
+          <div className="flex-none">
+            <Calendar />
+          </div>
+
+          {/* Chat Section */}
+          <div className="flex-1 min-h-0 border-t">
+            <Chat
+              messages={messages}
+              isLoading={isLoading}
+              onSendMessage={handleSendMessage}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </div>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
-  );
+  )
 }
