@@ -1,19 +1,38 @@
 import './globals.css'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/react'
+import { GeistSans } from 'geist/font/sans'
+import ErrorBoundary from '@/components/ErrorBoundary'
+import ServiceWorkerProvider from '@/components/ServiceWorkerProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Calendar Optimizer',
-  description: 'Personal calendar optimization tool with AI assistance',
+  title: 'Smart Calendar Assistant',
+  description: 'AI-powered calendar assistant with training and project management',
+  applicationName: 'Smart Calendar Assistant',
+  authors: [{ name: 'Nicolas Codet' }],
+  keywords: [
+    'calendar',
+    'AI assistant',
+    'training schedule',
+    'project management',
+    'PWA',
+    'Google Calendar',
+  ],
   manifest: '/manifest.json',
-  themeColor: '#000000',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
+  themeColor: '#ffffff',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    minimumScale: 1,
+    viewportFit: 'cover',
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Calendar Optimizer',
+    title: 'Smart Calendar Assistant',
     startupImage: [
       {
         url: '/splash/launch-1125x2436.png',
@@ -31,29 +50,61 @@ export const metadata: Metadata = {
       { url: '/icons/icon-512x512.png', sizes: '512x512' },
     ],
   },
+  formatDetection: {
+    telephone: false,
+  },
 }
 
-export default function RootLayout({
-  children,
-}: {
+export const viewport: Viewport = {
+  themeColor: '#ffffff',
+  width: 'device-width',
+  initialScale: 1,
+  minimumScale: 1,
+  viewportFit: 'cover',
+}
+
+interface RootLayoutProps {
   children: React.ReactNode
-}) {
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en">
+    <html lang="en" className={GeistSans.className}>
       <head>
-        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/icons/apple-touch-icon.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/icons/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/icons/favicon-16x16.png"
+        />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="theme-color" content="#000000" />
-        <meta name="apple-mobile-web-app-title" content="Calendar Optimizer" />
-        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="Smart Calendar Assistant" />
         <meta name="format-detection" content="telephone=no" />
-        <meta name="application-name" content="Calendar Optimizer" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="msapplication-TileColor" content="#ffffff" />
+        <meta name="msapplication-tap-highlight" content="no" />
       </head>
       <body className={`${inter.className} min-h-screen flex flex-col bg-gray-50`}>
-        <main className="flex-1 container mx-auto px-4 py-8">
-          {children}
-        </main>
+        <ErrorBoundary>
+          <ServiceWorkerProvider>
+            <main className="flex-1 container mx-auto px-4 py-8">
+              {children}
+            </main>
+            {process.env.NEXT_PUBLIC_ANALYTICS_ID && <Analytics />}
+          </ServiceWorkerProvider>
+        </ErrorBoundary>
       </body>
     </html>
   )

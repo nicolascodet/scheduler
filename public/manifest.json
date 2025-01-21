@@ -1,11 +1,11 @@
 {
-  "name": "Calendar Optimizer",
-  "short_name": "CalOpt",
-  "description": "Personal calendar optimization tool with AI assistance",
+  "name": "Smart Calendar Assistant",
+  "short_name": "Calendar",
+  "description": "AI-powered calendar assistant with training and project management",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "theme_color": "#ffffff",
   "orientation": "portrait",
   "icons": [
     {
@@ -55,6 +55,61 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "splash_pages": {
+    "iphone5": "/splash/launch-640x1136.png",
+    "iphone6": "/splash/launch-750x1334.png",
+    "iphoneplus": "/splash/launch-1242x2208.png",
+    "iphonex": "/splash/launch-1125x2436.png",
+    "iphonexr": "/splash/launch-828x1792.png",
+    "iphonexsmax": "/splash/launch-1242x2688.png",
+    "ipad": "/splash/launch-1536x2048.png",
+    "ipadpro1": "/splash/launch-1668x2224.png",
+    "ipadpro2": "/splash/launch-1668x2388.png",
+    "ipadpro3": "/splash/launch-2048x2732.png"
+  },
+  "shortcuts": [
+    {
+      "name": "View Schedule",
+      "short_name": "Schedule",
+      "description": "View your calendar schedule",
+      "url": "/schedule",
+      "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Training Plan",
+      "short_name": "Training",
+      "description": "View your training schedule",
+      "url": "/training",
+      "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Projects",
+      "short_name": "Projects",
+      "description": "View your project timelines",
+      "url": "/projects",
+      "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "categories": ["productivity", "utilities"],
+  "screenshots": [
+    {
+      "src": "/screenshots/calendar.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    },
+    {
+      "src": "/screenshots/training.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    },
+    {
+      "src": "/screenshots/projects.png",
+      "sizes": "1280x720",
+      "type": "image/png"
     }
   ]
 } 
