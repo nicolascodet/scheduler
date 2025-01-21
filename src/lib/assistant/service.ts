@@ -251,7 +251,11 @@ export async function executeCommand(
   command: ParsedCommand,
   context: AssistantContext,
   apis: {
-    calendar: any
+    calendar: {
+      createEvent: (event: any) => Promise<any>
+      updateEvent: (event: any) => Promise<any>
+      deleteEvent: (eventId: string) => Promise<any>
+    }
     training?: any
     project?: any
   }
@@ -259,10 +263,107 @@ export async function executeCommand(
   try {
     switch (command.type) {
       // Calendar commands
-      case 'create_event':
-      case 'update_event':
+      case 'create_event': {
+        if (!command.eventDetails || !command.dates) {
+          throw new Error('Missing event details or dates')
+        }
+        
+        const conflicts = findConflicts(
+          command.dates.start!,
+          command.dates.end!,
+          context
+        )
+        
+        if (conflicts.length > 0) {
+          const slots = findAvailableSlots(
+            command.dates.start!,
+            (command.dates.end!.getTime() - command.dates.start!.getTime()) / 1000 / 60,
+            context
+          )
+          
+          if (slots.length > 0) {
+            return {
+              success: false,
+              message: `Found conflicts with existing events. Would you like to schedule at ${format(slots[0], 'PPpp')} instead?`,
+            }
+          }
+          
+          return {
+            success: false,
+            message: 'Found conflicts with existing events and no available slots today.',
+          }
+        }
+        
+        await apis.calendar.createEvent({
+          ...command.eventDetails,
+          start: {
+            dateTime: command.dates.start!.toISOString(),
+            timeZone: getUserTimeZone(),
+          },
+          end: {
+            dateTime: command.dates.end!.toISOString(),
+            timeZone: getUserTimeZone(),
+          },
+        })
+        
+        return {
+          success: true,
+          message: 'Event created successfully.',
+        }
+      }
+
+      case 'update_event': {
+        if (!command.eventId || !command.eventDetails) {
+          throw new Error('Missing event ID or update details')
+        }
+        
+        if (command.dates) {
+          const conflicts = findConflicts(
+            command.dates.start!,
+            command.dates.end!,
+            context
+          )
+          
+          if (conflicts.length > 0) {
+            return {
+              success: false,
+              message: 'The new time conflicts with existing events.',
+            }
+          }
+        }
+        
+        await apis.calendar.updateEvent({
+          id: command.eventId,
+          ...command.eventDetails,
+          ...(command.dates && {
+            start: {
+              dateTime: command.dates.start!.toISOString(),
+              timeZone: getUserTimeZone(),
+            },
+            end: {
+              dateTime: command.dates.end!.toISOString(),
+              timeZone: getUserTimeZone(),
+            },
+          }),
+        })
+        
+        return {
+          success: true,
+          message: 'Event updated successfully.',
+        }
+      }
+
       case 'delete_event': {
-        // ... existing calendar command handling ...
+        if (!command.eventId) {
+          throw new Error('Missing event ID')
+        }
+        
+        await apis.calendar.deleteEvent(command.eventId)
+        
+        return {
+          success: true,
+          message: 'Event deleted successfully.',
+        }
       }
 
       // Training commands

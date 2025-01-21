@@ -101,19 +101,27 @@ export async function POST(request: NextRequest) {
     if (response.command) {
       const result = await executeCommand(response.command, context, {
         calendar: {
-          createEvent: (event: any) => calendar.events.insert({
-            calendarId: 'primary',
-            requestBody: event,
-          }),
-          updateEvent: (event: any) => calendar.events.patch({
-            calendarId: 'primary',
-            eventId: event.id,
-            requestBody: event,
-          }),
-          deleteEvent: (eventId: string) => calendar.events.delete({
-            calendarId: 'primary',
-            eventId,
-          }),
+          createEvent: async (event: any) => {
+            const result = await calendar.events.insert({
+              calendarId: 'primary',
+              requestBody: event,
+            })
+            return result.data
+          },
+          updateEvent: async (event: any) => {
+            const result = await calendar.events.patch({
+              calendarId: 'primary',
+              eventId: event.id,
+              requestBody: event,
+            })
+            return result.data
+          },
+          deleteEvent: async (eventId: string) => {
+            await calendar.events.delete({
+              calendarId: 'primary',
+              eventId,
+            })
+          },
         },
       })
 
