@@ -1,16 +1,12 @@
 import './globals.css'
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/react'
-import { GeistSans } from 'geist/font/sans'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import ServiceWorkerProvider from '@/components/ServiceWorkerProvider'
 
-const inter = Inter({ subsets: ['latin'] })
-
 export const metadata: Metadata = {
   title: 'Smart Calendar Assistant',
-  description: 'AI-powered calendar assistant with training and project management',
+  description: 'AI-powered calendar management and scheduling optimization',
   applicationName: 'Smart Calendar Assistant',
   authors: [{ name: 'Nicolas Codet' }],
   keywords: [
@@ -22,13 +18,6 @@ export const metadata: Metadata = {
     'Google Calendar',
   ],
   manifest: '/manifest.json',
-  themeColor: '#ffffff',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    minimumScale: 1,
-    viewportFit: 'cover',
-  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
@@ -60,6 +49,8 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   minimumScale: 1,
+  maximumScale: 1,
+  userScalable: false,
   viewportFit: 'cover',
 }
 
@@ -69,7 +60,7 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en" className={GeistSans.className}>
+    <html lang="en">
       <head>
         <link
           rel="apple-touch-icon"
@@ -96,7 +87,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <meta name="msapplication-TileColor" content="#ffffff" />
         <meta name="msapplication-tap-highlight" content="no" />
       </head>
-      <body className={`${inter.className} min-h-screen flex flex-col bg-gray-50`}>
+      <body className="min-h-screen flex flex-col bg-gray-50 font-sans antialiased">
         <ErrorBoundary>
           <ServiceWorkerProvider>
             <main className="flex-1 container mx-auto px-4 py-8">

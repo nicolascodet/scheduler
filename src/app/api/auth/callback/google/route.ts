@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createOAuth2Client } from '@/lib/google-calendar/config'
 import { parseGoogleError } from '@/lib/google-calendar/utils'
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -10,13 +12,13 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       return NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_APP_URL}?error=${error}`
+        `${APP_URL}?error=${error}`
       )
     }
 
     if (!code) {
       return NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_APP_URL}?error=missing_code`
+        `${APP_URL}?error=missing_code`
       )
     }
 
@@ -28,12 +30,12 @@ export async function GET(request: NextRequest) {
 
     // Redirect to app with encrypted tokens
     return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_APP_URL}?tokens=${encryptedTokens}`
+      `${APP_URL}?tokens=${encryptedTokens}`
     )
   } catch (error: any) {
     const calendarError = parseGoogleError(error)
     return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_APP_URL}?error=${calendarError.code}`
+      `${APP_URL}?error=${calendarError.code}`
     )
   }
 } 

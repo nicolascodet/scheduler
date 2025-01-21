@@ -6,15 +6,14 @@ import { useChat } from '@/hooks/useChat'
 import ChatMessage from './ChatMessage'
 
 interface ChatProps {
-  tokens: GoogleTokens
   onError?: (error: Error) => void
 }
 
-export default function Chat({ tokens, onError }: ChatProps) {
+export default function Chat({ onError }: ChatProps) {
   const [message, setMessage] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const { messages, sendMessage, isLoading } = useChat({ tokens, onError })
+  const { messages, sendMessage, isLoading } = useChat({ onError })
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {

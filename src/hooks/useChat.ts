@@ -1,15 +1,15 @@
 import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { ChatMessage } from '@/types/chat'
-import { GoogleTokens } from '@/types/calendar'
 import { AssistantResponse } from '@/types/assistant'
+import { useGoogleAuth } from '@/contexts/GoogleAuthContext'
 
 interface UseChatOptions {
-  tokens: GoogleTokens
   onError?: (error: Error) => void
 }
 
-export function useChat({ tokens, onError }: UseChatOptions) {
+export function useChat({ onError }: UseChatOptions) {
+  const { tokens } = useGoogleAuth()
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
@@ -22,6 +22,10 @@ export function useChat({ tokens, onError }: UseChatOptions) {
 
   const chatMutation = useMutation({
     mutationFn: async (message: string) => {
+      if (!tokens) {
+        throw new Error('Not authenticated')
+      }
+
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
