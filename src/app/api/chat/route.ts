@@ -100,19 +100,21 @@ export async function POST(request: NextRequest) {
     // Execute command if present
     if (response.command) {
       const result = await executeCommand(response.command, context, {
-        createEvent: (event: any) => calendar.events.insert({
-          calendarId: 'primary',
-          requestBody: event,
-        }),
-        updateEvent: (event: any) => calendar.events.patch({
-          calendarId: 'primary',
-          eventId: event.id,
-          requestBody: event,
-        }),
-        deleteEvent: (eventId: string) => calendar.events.delete({
-          calendarId: 'primary',
-          eventId,
-        }),
+        calendar: {
+          createEvent: (event: any) => calendar.events.insert({
+            calendarId: 'primary',
+            requestBody: event,
+          }),
+          updateEvent: (event: any) => calendar.events.patch({
+            calendarId: 'primary',
+            eventId: event.id,
+            requestBody: event,
+          }),
+          deleteEvent: (eventId: string) => calendar.events.delete({
+            calendarId: 'primary',
+            eventId,
+          }),
+        },
       })
 
       // Update response message if command execution failed
